@@ -1,7 +1,7 @@
-import os
+# import os
 import re
 
-print(os.getcwd())
+# print(os.getcwd())
 with open("input/third.txt", "r", encoding="utf-8") as file:
     puzzle_input = file.read()
 print(puzzle_input[0])
@@ -22,29 +22,24 @@ def search_and_multiply(input):
 
 search_and_multiply(puzzle_input)
 # 28357231 - too low. 188116424 - right answer
+pt2_regex = r"do\(\)|don't\(\)|mul\(\d+,\d+\)"
+instructions = re.findall(pt2_regex, puzzle_input)
+
 
 # pt 2
-
-do_exp = r"do\(\)"
-dont_exp = r"don't\(\)"
-
-
-# capture lines of dos and donts by using do_dont_line_exp to create a list of string lines. then parse each group like in pt 1 or discard. the first few mul elements get executed as there is no don't prior to it
-def find_do_dont_line(input):
-    do_dont_line_exp = r"(?:do\(\)).*?(?:don't\(\))"
-    command_lines = re.findall(do_dont_line_exp, input)
-    return command_lines
-
-
-def find_prefix_line(input):
-    prefix = r"(^.*?(do\(\)))"
-    prefix_line = re.findall(prefix, input)
-    return prefix_line
+def process_instructions(instructions):
+    is_enabled = True
+    total = 0
+    for instr in instructions:
+        if instr == "do()":
+            is_enabled = True
+        elif instr == "don't()":
+            is_enabled = False
+        elif instr.startswith("mul") and is_enabled:
+            x, y = map(int, re.findall(r"\d+", instr))
+            total += x * y
+    return total
 
 
-print(find_do_dont_line(puzzle_input))
-res = [search_and_multiply(line) for line in find_do_dont_line(puzzle_input)]
-# 1128698544 - too high, 2821746360 - even higher though i used a correct regex, but i was using total input. now it's here: 71339374 but this is missing the prefix line of the input prior to the first do. 71563420 - too low
-print(find_prefix_line(puzzle_input))
-res.append(search_and_multiply(find_prefix_line(puzzle_input)[0][0]))
-print(sum(res))
+result = process_instructions(instructions)
+print(result)
