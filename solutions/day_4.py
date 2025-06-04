@@ -10,8 +10,10 @@ lines = []
 for line in input:
     lines.append(line.removesuffix("\n"))
 
+# use regex or individual characters? Proly regex. Then, how do I extract diagonals?
+# [x] write functions that will do the search. alternatively, use regex for some of them.
 # 1x140 array
-# [] search each line with regex
+# [x] search each line with regex
 xmas_pattern = r"XMAS"
 samx_pattern = r"SAMX"
 
@@ -87,6 +89,27 @@ for line in diagonals:
     total_xmas_diag += find_xmas_line(line)
     total_samx_diag += find_samx_line(line)
 print(total_samx_diag + total_xmas_diag)
-# [] write 8 functions that will do the search. alternatively, use regex for some of them.
 
-# use regex or individual characters? Proly regex. Then, how do I extract diagonals?
+# PT. 2
+
+
+def part2(lines):
+    rows, cols = len(lines), len(lines[0])
+    count = 0
+
+    _set = {"M", "S"}
+
+    # find A as center of the cross, then check the diagonals
+    for r in range(1, rows - 1):
+        for c in range(1, cols - 1):
+            if lines[r][c] == "A":
+                if {lines[r - 1][c - 1], lines[r + 1][c + 1]} == _set and {
+                    lines[r - 1][c + 1],
+                    lines[r + 1][c - 1],
+                } == _set:
+                    count += 1
+
+    return count
+
+
+print(part2(lines))
