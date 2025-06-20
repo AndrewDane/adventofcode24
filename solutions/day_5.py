@@ -1386,15 +1386,18 @@ l2 = [pages.split(",") for pages in l2]
 def proc_update(update, instros):
     # FIXME need to create logic that accounts for rules of order AS WELL AS rogue pages that are to be left alone
     for instro in instros:
-        if (
-            instro[0] in update
-            and instro[1] in update
-            and update.index(instro[0]) < update.index(instro[1])
-        ):
-            pass
-
-
-total_mids = 0
+        if instro[0] in update and instro[1] in update:
+            if update.index(instro[0]) < update.index(instro[1]):
+                continue
+            else:
+                return 0
+    return int(update[len(update) // 2])
 
 
 # FIXME 10885 - too high
+total_mids = 0
+for update in l2:
+    total_mids += proc_update(update, l1)
+print(total_mids)
+
+# pt 2
