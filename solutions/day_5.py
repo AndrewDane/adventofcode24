@@ -1384,7 +1384,7 @@ l2 = [pages.split(",") for pages in l2]
 
 
 def proc_update(update, instros):
-    # FIXME need to create logic that accounts for rules of order AS WELL AS rogue pages that are to be left alone
+    # create logic that accounts for rules of order AS WELL AS rogue pages that are to be left alone
     for instro in instros:
         if instro[0] in update and instro[1] in update:
             if update.index(instro[0]) < update.index(instro[1]):
@@ -1401,3 +1401,18 @@ for update in l2:
 print(total_mids)
 
 # pt 2
+
+
+def cull_wrongs(update, instros):
+    """
+    if update index1 is -gt index2, then return update
+    """
+    for instro in instros:
+        if instro[0] in update and instro[1] in update:
+            if update.index(instro[0]) < update.index(instro[1]):
+                continue
+            else:
+                return update
+
+
+wrongs = [cull_wrongs(update, l1) for update in l2]
