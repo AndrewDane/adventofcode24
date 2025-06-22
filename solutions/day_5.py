@@ -1,3 +1,5 @@
+from collections import defaultdict
+
 input1 = """96|15
 69|95
 69|66
@@ -1394,11 +1396,10 @@ def proc_update(update, instros):
     return int(update[len(update) // 2])
 
 
-# FIXME 10885 - too high
+# 10885 - too high, 4569
 total_mids = 0
 for update in l2:
     total_mids += proc_update(update, l1)
-print(total_mids)
 
 # pt 2
 
@@ -1415,4 +1416,35 @@ def cull_wrongs(update, instros):
                 return update
 
 
-wrongs = [cull_wrongs(update, l1) for update in l2]
+wrongs = [
+    cull_wrongs(update, l1) for update in l2 if cull_wrongs(update, l1) is not None
+]
+rules = defaultdict(set)
+for instro in l1:
+    rules[int(instro[0])].add(int(instro[1]))
+
+wrongs = [[int(item) for item in wrong] for wrong in wrongs]
+
+print(wrongs[1])
+
+print(wrongs[0], "\n", wrongs[1])
+
+
+def fix_updates(rules, update):
+    filtered_rules = defaultdict(set)
+    for i in update:
+        if int(i) in rules:
+            filtered_rules[i] = rules[i] & set(update)
+    ordered_keys = sorted(
+        filtered_rules, key=lambda k: len(filtered_rules[k]), reverse=True
+    )
+    return ordered_keys
+
+
+total_mid_in_wrongs = 0
+for update in wrongs:
+    fixed_update = fix_updates(rules, update)
+    if fixed_update != []:
+        total_mid_in_wrongs += int(fixed_update[len(fixed_update) // 2])
+print(total_mid_in_wrongs)
+# 2364 is too low, 6316 - too low, 6456 - that's the right answer
